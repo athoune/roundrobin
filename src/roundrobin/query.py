@@ -1,10 +1,6 @@
 __author__ = "mathieu@garambrogne.net"
 __version__ = "0.1"
 
-def none_filter(stuff):
-	"A dummy filter wich does nothing"
-	return stuff
-
 class Query(object):
 	"Querying round robin database"
 	def __init__(self, consolidation='AVERAGE', resolution=None, start=None,

@@ -37,6 +37,9 @@ except ImportError:
 		env['LC_NUMERIC'] = 'en_US'
 		return Popen('rrdtool %s ' % command, env= env, shell=True, stdout=PIPE).stdout
 
+def none_filter(stuff):
+	"A dummy filter wich does nothing"
+	return stuff
 
 class RRD(object):
 	"Round robin database"
