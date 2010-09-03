@@ -51,6 +51,15 @@ class RRD(object):
 	def _query(self, command, column=None, filter=none_filter):
 		#return Result(Popen('rrdtool fetch %s %s ' % (self.path, command), env= env, shell=True, stdout=PIPE).stdout, column, filter)
 		return Result(rrd_wrapper('fetch %s %s' % (self.path, command)), column, filter)
+	def cmd(self, cmd, args):
+		"pure rrdtool commands"
+		return rrd_wrapper('%s %s %s' % (cmd, self.path, args))
+	def _create(self, args):
+		"pure create"
+		return self.cmd('create', args)
+	def _update(self, args):
+		"pure update"
+		return self.cmd('update', args)
 	def fetch(self, *args, **dico):
 		"""
 r = RRD('toto.rrd')
