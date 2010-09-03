@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 sys.path.append('../src')
 
@@ -5,9 +6,12 @@ from roundrobin.rrd import RRD, rrd_wrapper
 import unittest
 from subprocess import Popen
 import os
+import os.path
 
 class BasicTest(unittest.TestCase):
 	def setUp(self):
+		if os.path.exists('test.rrd'):
+			os.remove('test.rrd')
 		rrd_wrapper('create test.rrd --start 920804400 DS:speed:COUNTER:600:U:U RRA:AVERAGE:0.5:1:24 RRA:AVERAGE:0.5:6:10')
 		rrd_wrapper('update test.rrd 920804700:12345 920805000:12357 920805300:12363')
 		rrd_wrapper('update test.rrd 920805600:12363 920805900:12363 920806200:12373')
