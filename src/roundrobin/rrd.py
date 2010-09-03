@@ -21,12 +21,15 @@ try:
 			prems = True
 			while True:
 				self.spawn.expect('\r\n')
+				#print "[%s]" % self.spawn.before
 				if prems:
 					prems = False
 					continue
 				line = self.spawn.before
 				if line[:3] == 'OK ':
 					return
+				if line[:7] == 'ERROR: ':
+					raise Exception('rrd', line)
 				yield line
 	rrd_wrapper = RRDwrapper()
 except ImportError:
@@ -36,6 +39,8 @@ except ImportError:
 		env = os.environ
 		env['LC_NUMERIC'] = 'en_US'
 		return Popen('rrdtool %s ' % command, env= env, shell=True, stdout=PIPE).stdout
+
+#print list(rrd_wrapper('info test.rrd'))
 
 def none_filter(stuff):
 	"A dummy filter wich does nothing"
@@ -51,15 +56,22 @@ class RRD(object):
 	def _query(self, command, column=None, filter=none_filter):
 		#return Result(Popen('rrdtool fetch %s %s ' % (self.path, command), env= env, shell=True, stdout=PIPE).stdout, column, filter)
 		return Result(rrd_wrapper('fetch %s %s' % (self.path, command)), column, filter)
-	def cmd(self, cmd, args):
+	def cmd(self, cmd, args=''):
 		"pure rrdtool commands"
+		#print '%s %s %s' % (cmd, self.path, args)
 		return rrd_wrapper('%s %s %s' % (cmd, self.path, args))
+	def blindCmd(self, cmd, args=''):
+		"command without output"
+		for l in self.cmd(cmd, args):
+			pass
 	def _create(self, args):
 		"pure create"
-		return self.cmd('create', args)
+		return self.blindCmd('create', args)
 	def _update(self, args):
 		"pure update"
-		return self.cmd('update', args)
+		return self.blindCmd('update', args)
+	def _info(self):
+		return self.cmd('info')
 	def fetch(self, *args, **dico):
 		"""
 r = RRD('toto.rrd')
@@ -71,7 +83,8 @@ for ts, value in r.fetch('AVERAGE', resolution=5, start='-5m'):
 		info = {
 			'ds'  :{},
 			'rra' :{}}
-		for line in rrd_wrapper('info %s' % self.path):
+		for line in self._info():
+			#print line
 			k,v = line[:-1].split(' = ')
 			if k[:3] == 'ds[':
 				d,vv = k.split('.',1)

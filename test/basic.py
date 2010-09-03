@@ -9,10 +9,12 @@ import os.path
 
 class BasicTest(unittest.TestCase):
 	def setUp(self):
-		if os.path.exists('test.rrd'):
-			os.remove('test.rrd')
-		self.rrd = RRD('test.rrd')
+		FILE = 'test.rrd'
+		if os.path.exists(FILE):
+			os.remove(FILE)
+		self.rrd = RRD(FILE)
 		self.rrd._create('--start 920804400 DS:speed:COUNTER:600:U:U RRA:AVERAGE:0.5:1:24 RRA:AVERAGE:0.5:6:10')
+		self.assertTrue(os.path.exists(FILE))
 		self.rrd._update('920804700:12345 920805000:12357 920805300:12363')
 		self.rrd._update('920805600:12363 920805900:12363 920806200:12373')
 		self.rrd._update('920806500:12383 920806800:12393 920807100:12399')
