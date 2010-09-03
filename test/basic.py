@@ -10,6 +10,9 @@ from roundrobin.rrd import RRD
 from roundrobin.query import AVERAGE
 
 class BasicTest(unittest.TestCase):
+	"""
+	http://oss.oetiker.ch/rrdtool/tut/rrdtutorial.en.html
+	"""
 	def setUp(self):
 		FILE = 'test.rrd'
 		if os.path.exists(FILE):
@@ -29,6 +32,8 @@ class BasicTest(unittest.TestCase):
 		data = [(ts, value) for ts, value in query(self.rrd)]
 		#print data, len(data)
 		self.assertEqual(None, data[0][1])
+		self.assertEqual(None, data[-1][1])
+		self.assertEqual(None, data[-2][1])
 		self.assertEqual(17, len(data))
 		#self.assertEqual(None, data[-1][1])
 
