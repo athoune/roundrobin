@@ -96,11 +96,6 @@ for ts, value in r.fetch('AVERAGE', resolution=5, start='-5m'):
 					info[k] = v
 		return info
 
-def float_or_none(data):
-	"Convert a string to a float, or keep it as None"
-	if data == None: return None
-	else: return float(data)
-
 if __name__ == '__main__':
 	import time
 	import os

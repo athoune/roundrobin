@@ -2,11 +2,12 @@
 import sys
 sys.path.append('../src')
 
-from roundrobin.rrd import RRD
-from roundrobin.query import AVERAGE
 import unittest
 import os
 import os.path
+
+from roundrobin.rrd import RRD
+from roundrobin.query import AVERAGE
 
 class BasicTest(unittest.TestCase):
 	def setUp(self):
@@ -21,12 +22,15 @@ class BasicTest(unittest.TestCase):
 		self.rrd._update('920806500:12383 920806800:12393 920807100:12399')
 		self.rrd._update('920807400:12405 920807700:12411 920808000:12415')
 		self.rrd._update('920808300:12420 920808600:12422 920808900:12423')
-	def test_info(self):
+	def _test_info(self):
 		print self.rrd.info()
 	def test_query(self):
-		query = AVERAGE(resolution=10, start='-10m', column=0, filter = lambda data: (1 - data))
-		for ts, value in query(self.rrd):
-			print ts, value
+		query = AVERAGE(start=920804400, end=920809200, column=0, filter = lambda data: (1 - data))
+		data = [(ts, value) for ts, value in query(self.rrd)]
+		#print data, len(data)
+		self.assertEqual(None, data[0][1])
+		self.assertEqual(17, len(data))
+		#self.assertEqual(None, data[-1][1])
 
 if __name__ == '__main__':
     unittest.main()
