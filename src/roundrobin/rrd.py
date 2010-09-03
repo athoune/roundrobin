@@ -10,6 +10,8 @@ Simple RRD wrapping for fetching data, when pyrrd is not enough
 from datetime import datetime
 import os
 
+from result import Result, none_filter
+
 try:
 	import pexpect
 	class RRDwrapper(object):
@@ -39,12 +41,6 @@ except ImportError:
 		env = os.environ
 		env['LC_NUMERIC'] = 'en_US'
 		return Popen('rrdtool %s ' % command, env= env, shell=True, stdout=PIPE).stdout
-
-#print list(rrd_wrapper('info test.rrd'))
-
-def none_filter(stuff):
-	"A dummy filter wich does nothing"
-	return stuff
 
 class RRD(object):
 	"Round robin database"
