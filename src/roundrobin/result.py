@@ -26,7 +26,7 @@ class Result(object):
 				ts, values = line.split(': ',1)
 				dt = datetime.fromtimestamp(int(ts))
 				value = values.split(' ')
-				if value == ['nan']:
+				if value[0] == 'nan':
 					yield dt,  None
 					continue
 				if self.column != None:
