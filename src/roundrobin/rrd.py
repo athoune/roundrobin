@@ -69,10 +69,14 @@ class RRD(object):
 		return self.blindCmd('update', args)
 	def updateOnce(self, date, value):
 		self.update([(date, value)])
-	def update(self, tuples):
-		"[FIXME] flush for large list of data"
+	def update(self, datas):
+		"""
+		datas is an iterable list of date, value tuples
+		RRD.update is faster than iteration with RRD.updateOnce
+		[FIXME] flush for large list of data
+		"""
 		values = ''
-		for date, value in tuples:
+		for date, value in datas:
 			if date == None:
 				date = int(time.time())
 			else:
