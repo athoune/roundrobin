@@ -67,13 +67,19 @@ class RRD(object):
 	def _update(self, args):
 		"pure update"
 		return self.blindCmd('update', args)
-	def update(self, date, value):
-		if date == None:
-			date = int(time.time())
-		else:
-			if type(date) == datetime:
-				date = int(time.mktime(date.timetuple()))
-		self._update('%s:%s' % (date, value))
+	def updateOnce(self, date, value):
+		self.update([(date, value)])
+	def update(self, tuples):
+		"[FIXME] flush for large list of data"
+		values = ''
+		for date, value in tuples:
+			if date == None:
+				date = int(time.time())
+			else:
+				if type(date) == datetime:
+					date = int(time.mktime(date.timetuple()))
+			values += '%s:%s ' % (date, value)
+		self._update(values)
 	def _info(self):
 		return self.cmd('info')
 	def fetch(self, *args, **dico):

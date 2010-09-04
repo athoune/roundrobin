@@ -21,11 +21,22 @@ class BasicTest(unittest.TestCase):
 		self.rrd = RRD(FILE)
 		self.rrd._create('--start 920804400 DS:speed:COUNTER:600:U:U RRA:AVERAGE:0.5:1:24 RRA:AVERAGE:0.5:6:10')
 		self.assertTrue(os.path.exists(FILE))
-		self.rrd._update('920804700:12345 920805000:12357 920805300:12363')
-		self.rrd._update('920805600:12363 920805900:12363 920806200:12373')
-		self.rrd._update('920806500:12383 920806800:12393 920807100:12399')
-		self.rrd._update('920807400:12405 920807700:12411 920808000:12415')
-		self.rrd._update('920808300:12420 920808600:12422 920808900:12423')
+		self.rrd.update([
+		(920804700, 12345),
+		(920805000, 12357),
+		(920805300, 12363),
+		(920805600, 12363),
+		(920805900, 12363),
+		(920806200, 12373),
+		(920806500, 12383),
+		(920806800, 12393),
+		(920807100, 12399),
+		(920807400, 12405),
+		(920807700, 12411),
+		(920808000, 12415),
+		(920808300, 12420),
+		(920808600, 12422),
+		(920808900, 12423)])
 	def _test_info(self):
 		print self.rrd.info()
 	def test_query(self):
@@ -38,8 +49,8 @@ class BasicTest(unittest.TestCase):
 		self.assertEqual(17, len(data))
 		#self.assertEqual(None, data[-1][1])
 	def test_update(self):
-		self.rrd.update(920809200, 12415)
-		self.rrd.update(datetime.fromtimestamp(920809500), 12430)
+		self.rrd.updateOnce(920809200, 12415)
+		self.rrd.updateOnce(datetime.fromtimestamp(920809500), 12430)
 
 if __name__ == '__main__':
     unittest.main()
