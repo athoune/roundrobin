@@ -5,6 +5,7 @@ sys.path.append('../src')
 import unittest
 import os
 import os.path
+from datetime import datetime
 
 from roundrobin.rrd import RRD
 from roundrobin.query import AVERAGE
@@ -36,6 +37,9 @@ class BasicTest(unittest.TestCase):
 		self.assertEqual(None, data[-2][1])
 		self.assertEqual(17, len(data))
 		#self.assertEqual(None, data[-1][1])
+	def test_update(self):
+		self.rrd.update(920809200, 12415)
+		self.rrd.update(datetime.fromtimestamp(920809500), 12430)
 
 if __name__ == '__main__':
     unittest.main()

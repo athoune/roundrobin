@@ -9,6 +9,7 @@ Simple RRD wrapping for fetching data, when pyrrd is not enough
 
 from datetime import datetime
 import os
+import time
 
 from result import Result, none_filter
 
@@ -66,6 +67,13 @@ class RRD(object):
 	def _update(self, args):
 		"pure update"
 		return self.blindCmd('update', args)
+	def update(self, date, value):
+		if date == None:
+			date = int(time.time())
+		else:
+			if type(date) == datetime:
+				date = int(time.mktime(date.timetuple()))
+		self._update('%s:%s' % (date, value))
 	def _info(self):
 		return self.cmd('info')
 	def fetch(self, *args, **dico):
