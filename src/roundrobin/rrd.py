@@ -43,6 +43,26 @@ except ImportError:
 		env['LC_NUMERIC'] = 'en_US'
 		return Popen('rrdtool %s ' % command, env= env, shell=True, stdout=PIPE).stdout
 
+def dateOrInt(date):
+	if date == None:
+		return int(time.time())
+	if type(date) == datetime:
+		return int(time.mktime(date.timetuple()))
+	return date
+
+def create(path, datas, start=None, step=None, no_overwrite=False):
+	cmd = ""
+	if start != None:
+		cmd += "--start %i " % dateOrInt(start)
+	if step != None:
+		cmd += "--step %i " % dateOrInt(step)
+	if no_overwrite:
+		cmd += "--no-overwrite "
+	cmd += " ".join(datas)
+	rrd = RRD(path)
+	rrd._create(cmd)
+	return rrd
+
 class RRD(object):
 	"Round robin database"
 	def __init__(self, path):
@@ -77,11 +97,7 @@ class RRD(object):
 		"""
 		values = ''
 		for date, value in datas:
-			if date == None:
-				date = int(time.time())
-			else:
-				if type(date) == datetime:
-					date = int(time.mktime(date.timetuple()))
+			date = dateOrInt(date)
 			values += '%s:%s ' % (date, value)
 		self._update(values)
 	def _info(self):
