@@ -8,7 +8,7 @@ import os.path
 from datetime import datetime
 
 from roundrobin.rrd import create, COUNTER, AVERAGE
-from roundrobin.query import AVERAGE as qAVERAGE
+from roundrobin import query
 
 class BasicTest(unittest.TestCase):
 	"""
@@ -39,8 +39,8 @@ class BasicTest(unittest.TestCase):
 	def _test_info(self):
 		print self.rrd.info()
 	def test_query(self):
-		query = qAVERAGE(start=920804400, end=920809200, column=0, filter = lambda data: (1 - data))
-		data = [(ts, value) for ts, value in query(self.rrd)]
+		q = query.AVERAGE(start=920804400, end=920809200, column=0, filter = lambda data: (1 - data))
+		data = [(ts, value) for ts, value in q(self.rrd)]
 		#print data, len(data)
 		self.assertEqual(None, data[0][1])
 		self.assertEqual(None, data[-1][1])
