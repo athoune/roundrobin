@@ -18,7 +18,11 @@ class BasicTest(unittest.TestCase):
 		FILE = 'test.rrd'
 		if os.path.exists(FILE):
 			os.remove(FILE)
-		self.rrd = create(FILE, [COUNTER('speed', 600, 'U','U'), AVERAGE(0.5,1,24), AVERAGE(0.5, 6, 10)], start=920804400)
+		self.rrd = create(FILE,
+			COUNTER('speed', 600, 'U','U'),
+			AVERAGE(0.5, 1, 24),
+			AVERAGE(0.5, 6, 10),
+			start=920804400)
 		self.assertTrue(os.path.exists(FILE))
 		self.rrd.update([
 		(920804700, 12345),

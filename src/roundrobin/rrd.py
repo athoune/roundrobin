@@ -44,19 +44,21 @@ except ImportError:
 		return Popen('rrdtool %s ' % command, env= env, shell=True, stdout=PIPE).stdout
 
 def dateOrInt(date):
+	"None became now, date or int can be used"
 	if date == None:
 		return int(time.time())
 	if type(date) == datetime:
 		return int(time.mktime(date.timetuple()))
 	return date
 
-def create(path, datas, start=None, step=None, no_overwrite=False):
+def create(path, *datas, **dico):
+	"Create a new RRD"
 	cmd = ""
-	if start != None:
-		cmd += "--start %i " % dateOrInt(start)
-	if step != None:
-		cmd += "--step %i " % dateOrInt(step)
-	if no_overwrite:
+	if 'start' in dico:
+		cmd += "--start %i " % dateOrInt(dico['start'])
+	if 'step' in dico:
+		cmd += "--step %i " % dateOrInt(dico['step'])
+	if 'no_overwrite' in dico:
 		cmd += "--no-overwrite "
 	for data in datas:
 		cmd += " %s" % str(data)
