@@ -1,3 +1,5 @@
 *.pyc
 build
 test/test.rrd
+src/roundrobin.egg-info
+dist
