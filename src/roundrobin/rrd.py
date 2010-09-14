@@ -90,6 +90,38 @@ class ABSOLUTE(DS):
 	def __init__(self, name, heartbeat, min_, max_):
 		DS.__init__(self, name, 'ABSOLUTE', heartbeat, min_, max_)
 
+class COMPUTE(object):
+	def __init__(self, name, rpn):
+		self.name = name
+		self.rpn = rpn
+	def __repr__(self):
+		return "DS:%s:COMPUTE:%s" % (self.name, self.rpn)
+
+class RRA(object):
+	def __init__(self, cf, xff, steps, rows):
+		self.cf = cf
+		self.xff = xff
+		self.steps = steps
+		self.rows = rows
+	def __repr__(self):
+		return "RRA:%s:%s:%s:%s" % (self.cf, self.xff, self.steps, self.rows)
+
+class AVERAGE(RRA):
+	def __init__(self, xff, steps, rows):
+		RRA.__init__(self, 'AVERAGE', xff, steps, rows)
+
+class MIN(RRA):
+	def __init__(self, xff, steps, rows):
+		RRA.__init__(self, 'MIN', xff, steps, rows)
+
+class MAX(RRA):
+	def __init__(self, xff, steps, rows):
+		RRA.__init__(self, 'MAX', xff, steps, rows)
+
+class LAST(RRA):
+	def __init__(self, xff, steps, rows):
+		RRA.__init__(self, 'LAST', xff, steps, rows)
+
 class RRD(object):
 	"Round robin database"
 	def __init__(self, path):

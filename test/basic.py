@@ -7,8 +7,8 @@ import os
 import os.path
 from datetime import datetime
 
-import roundrobin.rrd as rrd
-from roundrobin.query import AVERAGE
+from roundrobin.rrd import create, COUNTER, AVERAGE
+from roundrobin.query import AVERAGE as qAVERAGE
 
 class BasicTest(unittest.TestCase):
 	"""
@@ -18,7 +18,7 @@ class BasicTest(unittest.TestCase):
 		FILE = 'test.rrd'
 		if os.path.exists(FILE):
 			os.remove(FILE)
-		self.rrd = rrd.create(FILE, [rrd.COUNTER('speed', 600, 'U','U'), 'RRA:AVERAGE:0.5:1:24', 'RRA:AVERAGE:0.5:6:10'], start=920804400)
+		self.rrd = create(FILE, [COUNTER('speed', 600, 'U','U'), AVERAGE(0.5,1,24), AVERAGE(0.5, 6, 10)], start=920804400)
 		self.assertTrue(os.path.exists(FILE))
 		self.rrd.update([
 		(920804700, 12345),
@@ -39,7 +39,7 @@ class BasicTest(unittest.TestCase):
 	def _test_info(self):
 		print self.rrd.info()
 	def test_query(self):
-		query = AVERAGE(start=920804400, end=920809200, column=0, filter = lambda data: (1 - data))
+		query = qAVERAGE(start=920804400, end=920809200, column=0, filter = lambda data: (1 - data))
 		data = [(ts, value) for ts, value in query(self.rrd)]
 		#print data, len(data)
 		self.assertEqual(None, data[0][1])
