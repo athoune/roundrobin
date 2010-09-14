@@ -58,10 +58,37 @@ def create(path, datas, start=None, step=None, no_overwrite=False):
 		cmd += "--step %i " % dateOrInt(step)
 	if no_overwrite:
 		cmd += "--no-overwrite "
-	cmd += " ".join(datas)
+	for data in datas:
+		cmd += " %s" % str(data)
 	rrd = RRD(path)
 	rrd._create(cmd)
 	return rrd
+
+class DS(object):
+	def __init__(self, name, dst, heartbeat, min_, max_):
+		self.name = name
+		self.dst = dst
+		self.heartbeat = heartbeat
+		self.min = min_
+		self.max = max_
+	def __repr__(self):
+		return "DS:%s:%s:%i:%s:%s" % (self.name, self.dst, self.heartbeat, self.min, self.max)
+
+class GAUGE(DS):
+	def __init__(self, name, heartbeat, min_, max_):
+		DS.__init__(self, name, 'GAUGE', heartbeat, min_, max_)
+
+class COUNTER(DS):
+	def __init__(self, name, heartbeat, min_, max_):
+		DS.__init__(self, name, 'COUNTER', heartbeat, min_, max_)
+
+class DERIVE(DS):
+	def __init__(self, name, heartbeat, min_, max_):
+		DS.__init__(self, name, 'DERIVE', heartbeat, min_, max_)
+
+class ABSOLUTE(DS):
+	def __init__(self, name, heartbeat, min_, max_):
+		DS.__init__(self, name, 'ABSOLUTE', heartbeat, min_, max_)
 
 class RRD(object):
 	"Round robin database"
