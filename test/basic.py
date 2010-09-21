@@ -9,6 +9,7 @@ from datetime import datetime
 
 from roundrobin.rrd import create, COUNTER, AVERAGE
 from roundrobin import query
+from roundrobin import graph
 
 class BasicTest(unittest.TestCase):
 	"""
@@ -54,5 +55,10 @@ class BasicTest(unittest.TestCase):
 	def test_update(self):
 		self.rrd.updateOnce(920809200, 12415)
 		self.rrd.updateOnce(datetime.fromtimestamp(920809500), 12430)
+	def test_graph(self):
+		g = graph.Graph('test.png', title="Testing graph", start=920804700, end=920809500 )
+		g.data(graph.DEF('ds0', 'test.rrd', 'speed'))
+		g.graph(graph.LINE(1, 'ds0', '0000FF'))
+		g.draw()
 if __name__ == '__main__':
     unittest.main()
