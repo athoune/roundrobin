@@ -18,13 +18,15 @@ try:
 	class RRDwrapper(object):
 		def __init__(self):
 			#LC_NUMERIC=en_US 
+			self.debug = True
 			self.spawn = pexpect.spawn('rrdtool -')
 		def __call__(self, data):
 			self.spawn.sendline(data)
 			prems = True
 			while True:
 				self.spawn.expect('\r\n')
-				#print "[%s]" % self.spawn.before
+				if self.debug:
+					print "[%s]" % self.spawn.before
 				if prems:
 					prems = False
 					continue
